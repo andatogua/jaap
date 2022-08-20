@@ -1,0 +1,247 @@
+{% extends 'admin/base.html' %}
+
+{% block extrastyle %}{{ block.super }}
+<style>
+    :root {
+        --primary: #205375;
+        --secondary: #112B3C;
+        --link-fg: #686868;
+        --link-selected-fg: #20282e;
+        --selected-row: #c7e2f4;
+        --header-color: #F66B0E;
+        --breadcrumbs-bg: #fff;
+        --breadcrumbs-fg: #112B3C;
+        --breadcrumbs-link-fg: #2053759d;
+        --object-tools-bg: #f66b0e38;
+        --object-tools-fg: #F66B0E;
+        --object-tools-hover-bg: #f66b0e6d;
+        --border-color: #c7e2f4;
+        --button-fg: var(--primary);
+        --button-bg: var(--border-color);
+        --button-hover-bg: #609ab6;
+        --default-button-bg: rgb(0, 169, 11);
+        --default-button-hover-bg: rgb(3, 116, 10);
+        --delete-button-bg: #fff;
+        --delete-button-hover-bg: #ef5757;
+
+
+
+
+    }
+
+    .main .content {
+        display: flex;
+        flex-direction: column;
+
+        align-items: center;
+        padding-top: 0;
+    }
+
+    .main #content {
+        min-width: 33.33333333%;
+    }
+
+    .current-model a:visited {
+        color: var(--secondary);
+    }
+
+    #nav-sidebar .current-app .section:visited {
+        color: #fff;
+        font-weight: bolder;
+    }
+
+    .module caption {
+        background-color: #a7a7a7;
+    }
+    
+    .module h2{
+        background-color: var(--primary);
+    }
+
+    .current-app caption {
+        background-color: var(--secondary);
+
+    }
+
+    #nav-sidebar .current-app .section:link {
+        color: #fff;
+        font-weight: bolder;
+    }
+
+    thead th {
+        background: var(--primary);
+    }
+
+    thead th a:link {
+        color: #fff;
+    }
+
+    thead th a:visited {
+        color: #fff;
+    }
+
+    table thead th .text a:hover {
+        background: var(--secondary);
+    }
+
+    thead th.sorted {
+        background: var(--secondary);
+    }
+
+    input:focus-visible {
+        outline-offset: 0px;
+        border: 0;
+    }
+
+    .module table caption {
+        border-radius: 10px 10px 0 0;
+    }
+
+    input[type=submit].default,
+    .submit-row input.default {
+        color: #fff;
+        background-color: var(--default-button-bg);
+        font-weight: bolder;
+    }
+
+    input[type=submit].default:hover,
+    .submit-row input.default:hover {
+        background-color: var(--default-button-hover-bg);
+    }
+
+    .submit-row .deletelink-box a.deletelink {
+        border-radius: 20px;
+        border: 1px solid rgb(255, 0, 0);
+        color: rgb(255, 0, 0);
+        min-width: 80px;
+        text-align: center;
+        background-color: transparent;
+    }
+
+    .submit-row .deletelink-box a.deletelink:hover {
+        background: rgb(255, 0, 0);
+        color: #fff;
+    }
+
+    .submit-row input[type=submit] {
+        border-radius: 20px;
+        min-width: 120px;
+    }
+
+    form div .submit-row {
+        background: #fff;
+        border: 0;
+    }
+
+    fieldset h2 {
+        border-radius: 8px 8px 0 0;
+    }
+
+    form .module {
+        border-radius: 10px;
+        border: 1px solid var(--primary);
+    }
+
+    form .module .form-row {
+
+        border: none;
+    }
+
+    #branding h1 {
+        font-size: x-large;
+        font-weight: 500;
+    }
+
+    #branding h1 a:visited {
+        color: #fff;
+    }
+
+    #header {
+        color: #fff;
+        z-index: 100;
+        justify-content: space-between;
+        background-color: var(--secondary);
+    }
+
+    .delete-confirmation form .cancel-link {
+        color: var(--button-fg);
+        background: var(--button-bg);
+        border-radius: 20px;
+    }
+
+    .delete-confirmation form .cancel-link:hover {
+        background: var(--button-hover-bg);
+    }
+
+    .delete-confirmation form input[type="submit"] {
+        color: red;
+        border: 1px solid red;
+        border-radius: 20px;
+    }
+
+    .delete-confirmation form input[type="submit"]:hover {
+        color: #fff;
+        background: red;
+    }
+
+    .login #container #header {
+        position: inherit;
+    }
+
+    .dashboard #container #content {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        width: auto;
+    }
+
+    .dashboard #container #content h1 {
+        text-align: center;
+        width: 100%;
+        font-weight: bolder;
+    }
+
+    .dashboard #container #content #content-main {
+        margin-right: 50px;
+        width: 300px;
+    }
+
+    .dashboard #container #content #content-related {
+        margin-right: 0;
+    }
+
+    .dashboard #container .colMS {
+        margin-right: 0;
+    }
+
+    .change-form #container #content {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .change-form #container #content #content-main {
+        max-width: 700px;
+    }
+
+    div.breadcrumbs {
+        background: var(--primary);
+    }
+    #changelist #toolbar {
+    border: 1px solid #eee;
+    border-radius: 10px;
+    }
+
+    .object-tools a.addlink {
+    background-color: var(--object-tools-bg);
+    color: var(--object-tools-fg);
+    }
+
+    .object-tools a.addlink:hover {
+    background-color: var(--object-tools-hover-bg);
+    color: var(--object-tools-fg);
+    }
+    
+</style>
+{% endblock %}

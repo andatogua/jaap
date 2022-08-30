@@ -13,13 +13,15 @@ class Lectura(models.Model):
     fecha               = models.DateTimeField(auto_now_add=True)
     valor_consumo       = models.FloatField(null=True)
     observacion         = models.CharField(max_length=200,blank=True)
-    
+
     def save(self, *args, **kwargs):
         registro_anterior = Lectura.objects.filter(abonado = self.abonado).last()
-        print(registro_anterior.lectura_anterior,self.lectura_anterior)
+        if registro_anterior != None:
+            print(registro_anterior.lectura_anterior,registro_anterior.lectura_actual,self.lectura_anterior)
+
         if registro_anterior == None:
             self.lectura_anterior = 0
-        elif registro_anterior.lectura_anterior==self.lectura_anterior:
+        elif registro_anterior.lectura_anterior==self.lectura_anterior and registro_anterior.lectura_anterior > 0:
             pass
         else:
             self.lectura_anterior = registro_anterior.lectura_actual
@@ -33,7 +35,7 @@ class Lectura(models.Model):
             self.valor_consumo = round(consumo * settings.VALORM3,2)
 
         return super().save(*args, **kwargs)
-    
+
 
     def __str__(self):
         return "Lectura {}".format(self.id)

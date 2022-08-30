@@ -10,7 +10,7 @@ class LecturaForm(forms.ModelForm):
         super(forms.ModelForm, self).__init__(*args, **kwargs)
     def clean(self):
         registro_anterior = Lectura.objects.filter(abonado = self.cleaned_data['abonado']).last()
-        if registro_anterior and self.cleaned_data['lectura_actual'] < registro_anterior.lectura_anterior:
+        if registro_anterior and self.cleaned_data['lectura_actual'] < registro_anterior.lectura_actual:
             #raise forms.ValidationError('Lectura actual menor que la anterior')
             return self.add_error('lectura_actual',forms.ValidationError('Lectura actual menor que la anterior'))
         return super().clean()
@@ -73,7 +73,7 @@ class LecturaAdmin(admin.ModelAdmin):
             obj.valor_consumo = round(consumo * settings.VALORM3,2)
 
 
-        
+
 
         super(LecturaAdmin, self).save_model(request, obj, form, change)
     """

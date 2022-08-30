@@ -39,7 +39,7 @@ class PersonaForm(UserCreationForm):
 class PersonaAdmin(UserAdmin):
     add_form = PersonaForm
     form = PersonaForm
-    list_display = ( 'username', 'primer_nombre',
+    list_display = ( 'id','username', 'primer_nombre',
                     'primer_apellido', 'email',
                     'last_login')
     search_fields = ('email', 'username', 'primer_apellido')
@@ -47,16 +47,16 @@ class PersonaAdmin(UserAdmin):
     filter_horizontal = ()
     list_filter = ()
     fieldsets = (
-        ('Datos personales', 
+        ('Datos personales',
             {
                 'fields': (
-                    'username', 
-                    'primer_nombre', 'segundo_nombre', 
+                    'username',
+                    'primer_nombre', 'segundo_nombre',
                     'primer_apellido','segundo_apellido',
                 )
             }
         ),
-        ('Información de contacto', 
+        ('Información de contacto',
             {
                 'fields': (
                     'email', 'direccion', 'telefono'
@@ -65,16 +65,16 @@ class PersonaAdmin(UserAdmin):
         )
     )
     add_fieldsets = (
-        ('Datos personales', 
+        ('Datos personales',
             {
                 'fields': (
-                    'username', 
-                    'primer_nombre', 'segundo_nombre', 
+                    'username',
+                    'primer_nombre', 'segundo_nombre',
                     'primer_apellido','segundo_apellido',
                 )
             }
         ),
-        ('Información de contacto', 
+        ('Información de contacto',
             {
                 'fields': (
                     'email', 'direccion', 'telefono'
@@ -93,17 +93,17 @@ class PersonaAdmin(UserAdmin):
 class AbonadoAdmin(PersonaAdmin):
     list_display = PersonaAdmin.list_display + ('localidad',)
     fieldsets= PersonaAdmin.fieldsets + (
-        ('Datos Consumidor', 
+        ('Datos Consumidor',
             {
                 'fields': (
                     'num_medidor','localidad','latitud','longitud'
                 )
             }
         ),
-        
+
     )
     add_fieldsets= PersonaAdmin.add_fieldsets + (
-        ('Datos Consumidor', 
+        ('Datos Consumidor',
             {
                 'fields': (
                     'num_medidor', 'localidad'
@@ -115,31 +115,31 @@ class AbonadoAdmin(PersonaAdmin):
 class EmpleadoAdmin(PersonaAdmin):
     list_display = PersonaAdmin.list_display + ('is_staff','rol','oficina')
     fieldsets= PersonaAdmin.fieldsets + (
-        ('Datos Empresariales', 
+        ('Datos Empresariales',
             {
                 'fields': (
                     'rol','oficina'
                 )
             }
         ),
-        ('Permisos de usuario', 
+        ('Permisos de usuario',
             {
                 'fields': (
                     'user_permissions',
                 )
             }
         ),
-        
+
     )
     add_fieldsets= PersonaAdmin.add_fieldsets + (
-        ('Datos de empleado', 
+        ('Datos de empleado',
             {
                 'fields': (
                     'rol','oficina'
                 )
             }
         ),
-        
+
     )
 
     def save_model(self, request, obj, form, change):

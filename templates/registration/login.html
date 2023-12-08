@@ -1,0 +1,68 @@
+
+
+<!-- base_generic.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Iniciar sesión{% endblock %}</title>
+    <!-- Incluir Bootstrap CSS desde la CDN -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <!-- Agregar enlace a tu archivo de estilos -->
+    <style>
+        .errorlist {
+            color: red;
+        }
+    </style>
+
+</head>
+
+<body>
+
+
+    <!-- Contenido principal -->
+    <div class="container pt-5">
+        <main role="main">
+            <div class="container row justify-content-center">
+                <img src="data:image/png;base64,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" alt="">
+            </div>
+            <div class="container">
+                <div class="row mt-3">
+                    <div class="col-md-5 mx-auto mb-5">
+                        <form action="" method="post">{% csrf_token %}
+                            <h3 class="mb-4 text-center">Iniciar sesión</h3>
+                            {% if form.non_field_errors %}
+                            <p style="color:red">Usuario o contraseña incorrectos, prueba de nuevo.</p>
+                            {% endif %}
+                            <p>
+                                <input type="text" name="username" autofocus maxlength="254" required id="id_username"
+                                    class="form-control" placeholder="Nombre de usuario" />
+                            </p>
+                            <p>
+                                <input type="password" name="password" required id="id_password" class="form-control"
+                                    placeholder="Contraseña" />
+                            </p>
+                            <p><input type="submit" class="btn btn-primary btn-block" value="Acceder"></p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Incluir Bootstrap JS y jQuery al final del cuerpo para que funcione con Bootstrap -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+
+</body>
+
+</html>

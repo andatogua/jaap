@@ -1,0 +1,58 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'pagos/css/styles.css' %}">
+
+{% block content %}
+  <div style="display: flex;justify-content: center;background-color: #007bff;margin:0 0 20px 0">
+    <h1>Registrar Pago</h1>
+  </div>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    
+    <!-- Agregar un campo oculto para almacenar la URL de la vista JSON -->
+    <input type="hidden" id="url-info-abonado" value="{% url 'obtener_info' %}" />
+
+    <div style="display: flex; justify-content: space-between;align-items: center;">
+      <button type="submit">Registrar Pago</button>
+    <a class="btn" href="{% url 'dashboard' %}" >Cancelar</a>
+    </div>
+  </form>
+
+  <!-- Agregar scripts JavaScript -->
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      // Manejar el evento de cambio en el campo de selección de abonados
+      $('#id_abonado').change(function() {
+        // Obtener el ID del abonado seleccionado
+        var abonadoId = $(this).val();
+        // Obtener la URL de la vista JSON
+        var urlInfoAbonado = $('#url-info-abonado').val();
+
+        // Realizar una solicitud AJAX para obtener la información del abonado
+        $.ajax({
+          url: urlInfoAbonado,
+          data: { abonado_id: abonadoId },
+          dataType: 'json',
+          success: function(data) {
+            // Actualizar los campos con la información obtenida
+            console.log(data)
+            $('#id_ultima_info_consumo').val(data.ultimo_consumo);
+            $('#id_ultima_info_pago').val(data.ultimo_pago);
+            $('#id_cantidad_total_pago').val(data.cantidad_total_pago);
+            
+            // Actualizar el campo registro_consumo
+            $('#id_registro_consumo').empty(); // Limpiar opciones actuales
+            $.each(data.opciones_registro_consumo, function(index, value) {
+              $('#id_registro_consumo').append($('<option>', {
+                value: value.id,
+                text: value.str
+              }));
+            });
+            $('#id_registro_consumo').val(data.opciones_registro_consumo[0].id);
+          }
+        });
+      });
+    });
+  </script>
+{% endblock %}

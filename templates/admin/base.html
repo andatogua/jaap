@@ -3,8 +3,8 @@
 {% block extrastyle %}{{ block.super }}
 <style>
     :root {
-        --primary: #205375;
-        --secondary: #112B3C;
+        --primary:#007bff;
+        --secondary: #6c757d;
         --link-fg: #686868;
         --link-selected-fg: #20282e;
         --selected-row: #c7e2f4;
@@ -160,7 +160,7 @@
         color: #fff;
         z-index: 100;
         justify-content: space-between;
-        background-color: var(--secondary);
+        background-color: var(--primary);
     }
 
     .delete-confirmation form .cancel-link {
@@ -226,7 +226,11 @@
     }
 
     div.breadcrumbs {
-        background: var(--primary);
+        background: var(--breadcrumbs-bg);
+        color: var(--primary);
+    }
+    div.breadcrumbs a {
+        color: var(--secondary);
     }
     #changelist #toolbar {
     border: 1px solid #eee;

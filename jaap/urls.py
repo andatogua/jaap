@@ -15,12 +15,20 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-
+from .views import CustomLoginView,CustomLogoutView, home_view
 
 urlpatterns = [
+    path('', home_view, name='home'),
     path('admin/', admin.site.urls),
     path('api/',include('autenticacion.urls')),
     path('api/',include('registro.urls')),
     path('api/', include('parameters.urls')),
+    path('pagos/', include('pagos.urls')),
+    path('reportes/', include('reportes.urls')),
+    path('asignados/', include('asignados.urls')),
     path('api/auth/', include('dj_rest_auth.urls')),
+    path('login/', CustomLoginView.as_view(), name='login'),
+    path('logout/', CustomLogoutView.as_view(), name='logout'),
 ]
+
+admin.site.site_url = "/reportes/dashboard"

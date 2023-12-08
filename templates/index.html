@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Información del Abonado</title>
+    <!-- Agregar enlace al archivo CSS de Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+
+<body>
+
+    <div class="container mt-4">
+        <!-- Agrega el formulario de búsqueda -->
+        <h1 class="mb-4">Información del Abonado</h1>
+        <form method="post">
+            {% csrf_token %}
+            {{ form }}
+            <button type="submit" class="btn btn-primary">Buscar</button>
+        </form>
+
+        {% if error_message %}
+        <div class="alert alert-danger mt-3" role="alert">{{ error_message }}</div>
+
+        {% else %}
+        <!-- Información del Abonado -->
+        <div class="row mt-5">
+            <div class="col-lg-6">
+                <div class="card" style="background-color: #4caf5030; border-radius: 10px;">
+                    <div class="card-body">
+                        <h2 class="card-title">Datos del Abonado</h2>
+                        <p class="card-text">Cédula: {{ abonado.username }}</p>
+                        <p class="card-text">Nombres: {{ abonado.primer_nombre }}</p>
+                        <p class="card-text">Apellidos: {{ abonado.primer_apellido }} {{ abonado.segundo_apellido }}</p>
+                        <p class="card-text">Dirección: {{ abonado.direccion }} | {{ abonado.localidad.nombre }}</p>
+                        <p class="card-text">Teléfono: {{ abonado.telefono }}</p>
+                        <p class="card-text">Email: {{ abonado.email }}</p>
+                        <p class="card-text">Número de Medidor: {{ abonado.num_medidor }}</p>
+                        <!-- Agrega más campos aquí según tus necesidades -->
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-lg-6">
+
+                <!-- Última Lectura -->
+                <div class="card " style="background-color: #4c93af30; border-radius: 10px;">
+                    <div class="card-body">
+                        <h2 class="card-title">Total a pagar: ${{ total }} </h2>
+                        <p class="card-text">Fecha de Lectura: {{ ultima_lectura.fecha }}</p>
+                        <p class="card-text">Lectura Anterior: {{ ultima_lectura.lectura_anterior }}</p>
+                        <p class="card-text">Consumo Total: {{ consumo }}</p>
+                        <p class="card-text">Deuda anterior: ${{ deuda }}</p>
+                        <!-- Agrega más campos aquí según tus necesidades -->
+                    </div>
+                </div>
+
+                <!-- Último Pago -->
+                <div class="card mt-4" style="background-color: #af704c30; border-radius: 10px;">
+                    <div class="card-body">
+                        <h2 class="card-title">Último Pago</h2>
+                        <p class="card-text"><b>${{ ultimo_pago.cantidad_total_pago }}</b> el {{ ultimo_pago.fecha_creacion }}</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="mt-4">
+            <h2>Lecturas en los últimos 6 meses</h2>
+            <canvas id="lecturasChart" width="400" height="200"></canvas>
+        </div>
+        {% endif %}
+
+    </div>
+
+    <!-- Incluir Bootstrap JS y jQuery al final del cuerpo para que funcione con Bootstrap -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Espera a que el documento esté completamente cargado
+        document.addEventListener("DOMContentLoaded", function () {
+            // Obtiene el formulario por su ID
+            var form = document.getElementById("id_form");
+            // Agrega un evento de 'submit' al formulario
+            form.addEventListener("submit", function () {
+                // Limpia el valor del campo de entrada después de enviar el formulario
+                document.getElementById("id_cedula").value = "";
+            });
+        });
+    </script>
+    <script>
+        // Obtén los datos de las lecturas desde tu contexto de Django y ajústalos según tu estructura de datos
+        var lecturasData = {{ lecturas_data | safe }};
+
+        // Configura el contexto del gráfico
+        var ctx = document.getElementById('lecturasChart').getContext('2d');
+
+        // Crea el gráfico de área
+        var lecturasChart = new Chart(ctx, {
+            type: 'line',  // Puedes cambiar a 'bar' si prefieres un gráfico de barras
+            data: {
+                labels: lecturasData.labels,  // Aquí deberías tener las etiquetas de los últimos 6 meses
+                datasets: [{
+                    label: 'Lecturas',
+                    data: lecturasData.values,  // Aquí deberías tener los valores de las lecturas
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',  // Ajusta según tus preferencias
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+
+</body>
+
+</html>

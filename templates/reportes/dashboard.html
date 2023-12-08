@@ -1,0 +1,114 @@
+<!-- base_generic.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Tu Aplicación{% endblock %}</title>
+    <!-- Incluir Bootstrap CSS desde la CDN -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <!-- Agregar enlace a tu archivo de estilos -->
+</head>
+
+<body>
+
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <a class="navbar-brand" href="{% url 'admin:index' %}">Admin</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'admin:registro_lectura_changelist' %}">Lectura <span
+                            class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'admin:registro_servicio_changelist' %}">Servicios</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'realizar_pago' %}">Pagos</a>
+                </li>
+            </ul>
+            {% if user.is_authenticated %}
+            <a class="btn btn-outline-light my-2 my-sm-0" href="{% url 'logout' %}">Cerrar Sesión</a>
+            {% else %}
+            <a class="btn btn-outline-light my-2 my-sm-0" type="submit">Ingresar</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <!-- Contenido principal -->
+    <div class="container">
+        {% block content %}{% endblock %}
+        <!-- Mostrar la cantidad recaudada -->
+        <div class="row mt-5">
+            <div class="col-6">
+                <div class="jumbotron bg-success">
+                    <div class="container">
+                        <h1 class="display-4">$ {{ cantidad_recaudada_mes }}</h1>
+                        <p class="lead">Total recaudado en {{ mes }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="jumbotron bg-warning">
+                    <div class="container">
+                        <h1 class="display-4">$ {{ cantidad_recaudada }}</h1>
+                        <p class="lead">Total recaudado el {{ hoy }}</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div>
+            <!-- Mostrar el histograma de los últimos 6 meses -->
+            <div class="col-md-12">
+                <canvas id="grafico-recaudacion"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Incluir Bootstrap JS y jQuery al final del cuerpo para que funcione con Bootstrap -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Configuración del gráfico
+        var ctx = document.getElementById('grafico-recaudacion').getContext('2d');
+        var myChart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: {{ labels|safe }},
+            datasets: [{
+              label: 'Recaudación últimos 6 meses',
+              data: {{ data|safe }},
+              backgroundColor: 'rgba(75, 192, 192, 0.2)',
+              borderColor: 'rgba(75, 192, 192, 1)',
+              borderWidth: 1
+            }]
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true
+              }
+            }
+          }
+        });
+      </script>
+</body>
+
+</html>

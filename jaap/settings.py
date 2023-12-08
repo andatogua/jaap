@@ -51,7 +51,10 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'dj_rest_auth',
     'corsheaders',
-    'parameters'
+    'parameters',
+    'pagos',
+    'reportes',
+    'asignados'
 ]
 
 MIDDLEWARE = [
@@ -85,6 +88,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'jaap.wsgi.application'
 
+LOGIN_REDIRECT_URL = 'reportes/dashboard/'
+LOGOUT_REDIRECT_URL = '/login/'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases

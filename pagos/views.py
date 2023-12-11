@@ -28,7 +28,7 @@ class ObtenerInfoAbonadoView(View):
         consumo = 'No hay registros de consumo.' if not ultimo_consumo else str(ultimo_consumo.lectura_actual)
 
         if ultimo_consumo:
-            total_a_pagar += (float(ultimo_consumo.lectura_actual) * float(m3.valor))
+            total_a_pagar += (float(ultimo_consumo.lectura_actual - ultimo_consumo.lectura_anterior) * float(m3.valor))
 
         # Obtener el último pago para el abonado
         ultimo_pago = Pago.objects.filter(abonado=abonado).order_by('-fecha_creacion').first()

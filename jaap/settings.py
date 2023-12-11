@@ -30,7 +30,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-AUTH_USER_MODEL = "autenticacion.Persona"
 AUTHENTICATION_BACKENDS = (
 'django.contrib.auth.backends.RemoteUserBackend',
 'django.contrib.auth.backends.ModelBackend',
@@ -56,6 +55,7 @@ INSTALLED_APPS = [
     'reportes',
     'asignados'
 ]
+AUTH_USER_MODEL = "autenticacion.Persona"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -205,3 +205,9 @@ MINIMO = 2
 VALORM3 = 0.4
 VALOREXM3 = 0.5
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'andresdtg0407@gmail.com'  # Reemplaza con tu dirección de correo de Gmail
+EMAIL_HOST_PASSWORD = 'qajcesasipwxwfvh'  # Reemplaza con la contraseña de tu correo de Gmail

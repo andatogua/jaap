@@ -1,6 +1,11 @@
 from django.db import models
 from autenticacion.models import Abonado, Empleado
 from django.conf import settings
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.template.loader import render_to_string
+from django.core.mail import send_mail
+
 
 # Create your models here.
 
@@ -57,3 +62,39 @@ class Servicio(models.Model):
     def __str__(self):
         return "{} : {}".format(self.abonado,self.tipo_servicio)
 
+def enviar_correo_lectura(lectura):
+    from parameters.models import Parameter
+    from pagos.models import Pago
+    abonado = lectura.abonado
+    print(abonado.email)
+    m3 = Parameter.objects.filter(codigo="PR-AG").first()
+    total_a_pagar = 0
+    total_a_pagar += (float(lectura.lectura_actual - lectura.lectura_anterior) * float(m3.valor))
+
+    # Obtener el último pago para el abonado
+    ultimo_pago = Pago.objects.filter(abonado=abonado).order_by('-fecha_creacion').first()
+    pago = 'No hay registros de pago.' if not ultimo_pago else str(ultimo_pago.cantidad_total_pago)
+
+    if ultimo_pago:
+        total_a_pagar += round(float(ultimo_pago.cantidad_total_pago) - float(ultimo_pago.total_abonado),2)
+
+    # Obtener las opciones actualizadas para el campo registro_consumo
+    # opciones_registro_consumo = Lectura.objects.filter(abonado=abonado).values('id', 'lectura_actual')
+    data = {
+        'ultimo_consumo': lectura.lectura_actual - lectura.lectura_anterior,
+        'ultimo_pago': pago,
+        'cantidad_total_pago': total_a_pagar,
+        "lectura": lectura
+    }
+
+    subject = 'Nueva Lectura Registrada'
+    message = render_to_string('correo_lectura.html', data)
+    from_email = settings.EMAIL_HOST_USER
+    to_email = [lectura.abonado.email]  # Reemplaza con la dirección de correo a la que deseas enviar el correo
+    print("ENVIANDO EMAIL")
+    send_mail(subject, message, from_email, to_email, fail_silently=False)
+
+@receiver(post_save, sender=Lectura)
+def lectura_post_save(sender, instance, **kwargs):
+    print("Señal de post_save ejecutada para Lectura")
+    enviar_correo_lectura(instance)

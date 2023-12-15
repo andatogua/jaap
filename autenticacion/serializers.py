@@ -22,7 +22,7 @@ class AbonadoSerializer(PersonaSerializer):
         model = Abonado
         fields=[
                 'id','username',
-                'primer_nombre','segundo_nombre',
+                'primer_nombre','primer_apellido',
                 'direccion','telefono',
                 'email',
                 'longitud','latitud','localidad'

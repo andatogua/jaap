@@ -4,6 +4,7 @@ from django.db.models import Sum
 from pagos.models import Pago
 from django.utils import timezone
 from django.db.models.functions import ExtractMonth, ExtractYear
+from registro.models  import Lectura
 
 @login_required(login_url="login")
 def dashboard_view(request):
@@ -40,7 +41,7 @@ def dashboard_view(request):
         .values('year', 'mes') \
         .annotate(total=Sum('cantidad_total_pago')) \
         .order_by('year', 'mes')
-    print(recaudaciones_ultimos_6_meses)
+    # print(recaudaciones_ultimos_6_meses)
 
     # Convertir los objetos Decimal a números de punto flotante
     for mes in recaudaciones_ultimos_6_meses:
@@ -51,6 +52,35 @@ def dashboard_view(request):
     data = [mes['total'] for mes in recaudaciones_ultimos_6_meses]
 
 
+    # Filtra las lecturas realizadas durante los últimos 6 meses
+    lecturas_ultimos_6_meses = Lectura.objects.filter(
+        fecha__gte=ultimos_6_meses
+    )
+    # Calcula el consumo total para cada mes
+    # print(lecturas_ultimos_6_meses)
+    consumo_por_mes = {}
+    for lectura in lecturas_ultimos_6_meses:
+        mes_anio = lectura.fecha.strftime('%b %Y')
+        consumo_por_mes[mes_anio] = consumo_por_mes.get(mes_anio, 0) + (lectura.lectura_actual - lectura.lectura_anterior)
+
+    # Formatea los datos para el gráfico
+    labelsLec = list(consumo_por_mes.keys())
+    valuesLec = list(consumo_por_mes.values())
+
+    # Calcula la fecha hace 1 mes desde hoy
+    fecha_hace_1_mes = now - timezone.timedelta(days=30)
+
+    # Filtra las lecturas realizadas durante el último mes
+    lecturas_ultimo_mes = Lectura.objects.filter(
+        fecha__gte=fecha_hace_1_mes
+    )
+
+    # Calcula la suma de registros por empleado
+    # registros_por_empleado = lecturas_ultimo_mes.values('empleado__username').annotate(total_registros=Sum(1))
+    registros_por_empleado = lecturas_ultimo_mes.values('empleado__username','empleado__primer_nombre', 'empleado__primer_apellido').annotate(total_registros=Sum('abonado'))
+
+
+
     context = {
         'cantidad_recaudada': round(cantidad_recaudada,2),
         'cantidad_recaudada_mes': round(cantidad_recaudada_mes,2),
@@ -58,6 +88,9 @@ def dashboard_view(request):
         'mes': now.month,
         'labels': labels,
         'data': data,
+        'labelsLec': labelsLec,
+        'valuesLec': valuesLec,
+        'registros_por_empleado': registros_por_empleado
     }
 
     return render(request, 'reportes/dashboard.html', context)

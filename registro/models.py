@@ -5,7 +5,8 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.template.loader import render_to_string
 from django.core.mail import send_mail
-
+from datetime import datetime, timedelta
+import locale
 
 # Create your models here.
 
@@ -80,11 +81,30 @@ def enviar_correo_lectura(lectura):
 
     # Obtener las opciones actualizadas para el campo registro_consumo
     # opciones_registro_consumo = Lectura.objects.filter(abonado=abonado).values('id', 'lectura_actual')
+    
+    # Establecer la configuración regional a español
+    locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8')
+
+    # Obtener la fecha actual
+    fecha_actual = datetime.now()
+
+    # Calcular el primer día del mes actual
+    primer_dia_del_mes_actual = fecha_actual.replace(day=1)
+
+    # Calcular el último día del mes anterior
+    ultimo_dia_del_mes_anterior = primer_dia_del_mes_actual - timedelta(days=1)
+
+    # Obtener el mes y el año del mes anterior
+    mes_anterior = ultimo_dia_del_mes_anterior.strftime('%B')
+    anio_anterior = ultimo_dia_del_mes_anterior.year
+
     data = {
         'ultimo_consumo': lectura.lectura_actual - lectura.lectura_anterior,
         'ultimo_pago': pago,
         'cantidad_total_pago': total_a_pagar,
-        "lectura": lectura
+        "lectura": lectura,
+        "mes" : mes_anterior,
+        "anio" : anio_anterior
     }
 
     subject = 'Nueva Lectura Registrada'

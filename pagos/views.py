@@ -49,5 +49,5 @@ class ObtenerInfoAbonadoView(View):
                         'str': ultimo_consumo.lectura_actual
                 }
             ],
-            'cantidad_total_pago': total_a_pagar
+            'cantidad_total_pago': round(total_a_pagar,2)
         })

@@ -10,4 +10,4 @@ class AsignacionList(generics.ListAPIView):
 
     def get_queryset(self):
         # Filtrar asignaciones por el usuario logeado
-        return Asignacion.objects.filter(empleado=self.request.user)
+        return Asignacion.objects.filter(empleado=self.request.user).order_by('-fecha_asignacion')

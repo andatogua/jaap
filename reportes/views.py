@@ -1,9 +1,9 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from django.db.models import Sum
+from django.db.models import Sum, F, ExpressionWrapper, DecimalField, Value
 from pagos.models import Pago
 from django.utils import timezone
-from django.db.models.functions import ExtractMonth, ExtractYear
+from django.db.models.functions import ExtractMonth, ExtractYear, Coalesce
 from registro.models  import Lectura
 
 @login_required(login_url="login")
@@ -80,6 +80,21 @@ def dashboard_view(request):
     registros_por_empleado = lecturas_ultimo_mes.values('empleado__username','empleado__primer_nombre', 'empleado__primer_apellido').annotate(total_registros=Sum('abonado'))
 
 
+    # Realiza una expresión para calcular el saldo pendiente
+    saldo_pendiente_expr = ExpressionWrapper(
+        F('cantidad_total_pago') - F('total_abonado'),
+        output_field=DecimalField(max_digits=10, decimal_places=2)
+    )
+
+    # Realiza la consulta para obtener las tres personas con más saldo pendiente
+    personas_con_saldo_pendiente = (
+        Pago.objects
+        .values('abonado__id_persona', 'abonado__primer_nombre', 'abonado__primer_apellido')
+        .annotate(saldo_pendiente=Coalesce(Sum(saldo_pendiente_expr), Value(0)))
+        .order_by('-saldo_pendiente')[:3]
+    )
+
+    print("personas_con_saldo_pendiente--> ",personas_con_saldo_pendiente)
 
     context = {
         'cantidad_recaudada': round(cantidad_recaudada,2),
@@ -90,7 +105,8 @@ def dashboard_view(request):
         'data': data,
         'labelsLec': labelsLec,
         'valuesLec': valuesLec,
-        'registros_por_empleado': registros_por_empleado
+        'registros_por_empleado': registros_por_empleado,
+        "personas_con_saldo_pendiente": personas_con_saldo_pendiente
     }
 
     return render(request, 'reportes/dashboard.html', context)
